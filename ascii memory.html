@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Last 5 Bits of Characters Table</title>
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+</style>
+</head>
+<body>
+
+<table>
+  <thead>
+    <tr>
+      <th>Character</th>
+      <th>Last 5 Bits</th>
+    </tr>
+  </thead>
+  <tbody id="charTableBody"></tbody>
+</table>
+
+<script>
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const charTableBody = document.getElementById("charTableBody");
+    const characters = [];
+    for (let i = 32; i <= 63; i++) {
+      characters.push(i);
+    }
+    shuffleArray(characters);
+    characters.forEach(charCode => {
+      const char = charCode === 32 ? "␣" : String.fromCharCode(charCode);
+      const last5Bits = (charCode & 31).toString(2).padStart(5, "0");
+      const row = `<tr><td>${char}</td><td>${last5Bits}</td></tr>`;
+      charTableBody.innerHTML += row;
+    });
+  });
+</script>
+
+</body>
+</html>
