@@ -49,10 +49,10 @@
       characters.push(i);
     }
     shuffleArray(characters);
-    characters.forEach(charCode => {
+    characters.forEach((charCode, index) => {
       const char = charCode === 32 ? "␣" : String.fromCharCode(charCode);
       const last5Bits = (charCode & 31).toString(2).padStart(5, "0");
-      const row = `<tr><td>${char}</td><td>${last5Bits}</td></tr>`;
+      const row = `<tr${index % 2 ? " style='background:rgba(0,0,0,0.2)'" : ""}><td>${char}</td><td>${last5Bits}</td></tr>`;
       charTableBody.innerHTML += row;
     });
   });
