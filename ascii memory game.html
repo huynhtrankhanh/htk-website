@@ -106,7 +106,7 @@
   }
   
   function checkAnswer() {
-    const asciiValue = characterDisplay.textContent.charCodeAt(0);
+    const asciiValue = (characterDisplay.textContent === '␣' ? ' ' : characterDisplay.textContent).charCodeAt(0);
     const binaryString = ('0000000' + asciiValue.toString(2)).slice(-5);
     
     if (currentInput === binaryString) {
