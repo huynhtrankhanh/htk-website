@@ -5,9 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ASCII Memorization Game</title>
 <style>
-  body { text-align: center; }
+  body { text-align: center; font-family: Arial, sans-serif; }
+  #gameControls { display: flex; justify-content: center; flex-wrap: wrap; }
+  #gameControls button { font-size: 24px; padding: 20px; margin: 10px; }
   .hidden { display: none; }
-  #gameControls button { font-size: 24px; padding: 20px; margin: 5px; }
+  #feedback { font-size: 24px; transition: visibility 0s, opacity 0.5s linear; }
+  #userInput { margin: 20px; font-size: 24px; }
 </style>
 </head>
 <body>
@@ -21,6 +24,7 @@
   <p>Time left: <span id="timeLeft">30</span> seconds</p>
   <p>Score: <span id="score">0</span></p>
   <p>Character: <span id="character">?</span></p>
+  <div id="feedback" class="hidden"></div>
   <div id="userInput"></div>
   <div id="gameControls">
     <button data-key="0">0</button>
@@ -44,6 +48,7 @@
   const scoreDisplay = document.getElementById("score");
   const timeLeftDisplay = document.getElementById("timeLeft");
   const userInput = document.getElementById("userInput");
+  const feedbackDisplay = document.getElementById("feedback");
   const startButton = document.getElementById("startButton");
   const playAgainButton = document.getElementById("playAgainButton");
 
@@ -60,6 +65,7 @@
     score = 0;
     scoreDisplay.textContent = score;
     timeLeft = 30;
+    feedbackDisplay.classList.add('hidden');
     welcomeScreen.classList.add('hidden');
     gameOverScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
@@ -79,6 +85,15 @@
     scoreDisplay.textContent = score;
   }
   
+  function showFeedback(correct) {
+    feedbackDisplay.textContent = correct ? "Correct!" : "Incorrect!";
+    feedbackDisplay.style.color = correct ? "green" : "red";
+    feedbackDisplay.classList.remove('hidden');
+    setTimeout(() => {
+      feedbackDisplay.classList.add('hidden');
+    }, 800);
+  }
+  
   function startTimer() {
     const timer = setInterval(() => {
       timeLeft -= 1;
@@ -96,6 +111,9 @@
     
     if (currentInput === binaryString) {
       updateScore();
+      showFeedback(true);
+    } else {
+      showFeedback(false);
     }
     nextCharacter();
   }
