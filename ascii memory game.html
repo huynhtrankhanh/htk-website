@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASCII Memorization Game</title>
+<style>
+  body { text-align: center; }
+  .hidden { display: none; }
+  #gameControls button { font-size: 24px; padding: 10px; margin: 5px; }
+</style>
+</head>
+<body>
+
+<div id="welcomeScreen">
+  <h1>Welcome to the ASCII Memorization Game</h1>
+  <button id="startButton">Start</button>
+</div>
+
+<div id="gameScreen" class="hidden">
+  <p>Time left: <span id="timeLeft">30</span> seconds</p>
+  <p>Score: <span id="score">0</span></p>
+  <p>Character: <span id="character">?</span></p>
+  <div id="userInput"></div>
+  <div id="gameControls">
+    <button data-key="0">0</button>
+    <button data-key="1">1</button>
+    <button data-key="Delete">Delete</button>
+  </div>
+</div>
+
+<div id="gameOverScreen" class="hidden">
+  <h2>Game Over</h2>
+  <p>Your score is: <span id="finalScore"></span></p>
+  <button id="playAgainButton">Play Again</button>
+</div>
+
+<script>
+(function() {
+  const welcomeScreen = document.getElementById("welcomeScreen");
+  const gameScreen = document.getElementById("gameScreen");
+  const gameOverScreen = document.getElementById("gameOverScreen");
+  const characterDisplay = document.getElementById("character");
+  const scoreDisplay = document.getElementById("score");
+  const timeLeftDisplay = document.getElementById("timeLeft");
+  const userInput = document.getElementById("userInput");
+  const startButton = document.getElementById("startButton");
+  const playAgainButton = document.getElementById("playAgainButton");
+
+  let score = 0;
+  let timeLeft = 30;
+  let currentInput = '';
+  
+  function getRandomCharacter() {
+    const asciiCode = Math.floor(Math.random() * (64 - 32)) + 32;
+    return asciiCode === 32 ? '␣' : String.fromCharCode(asciiCode);
+  }
+  
+  function startGame() {
+    score = 0;
+    scoreDisplay.textContent = score;
+    timeLeft = 30;
+    welcomeScreen.classList.add('hidden');
+    gameOverScreen.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+    startTimer();
+    nextCharacter();
+    userInput.textContent = '';
+  }
+  
+  function endGame() {
+    gameScreen.classList.add('hidden');
+    gameOverScreen.classList.remove('hidden');
+    document.getElementById('finalScore').textContent = score;
+  }
+  
+  function updateScore() {
+    score += 1;
+    scoreDisplay.textContent = score;
+  }
+  
+  function startTimer() {
+    const timer = setInterval(() => {
+      timeLeft -= 1;
+      timeLeftDisplay.textContent = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        endGame();
+      }
+    }, 1000);
+  }
+  
+  function checkAnswer() {
+    const asciiValue = characterDisplay.textContent.charCodeAt(0);
+    const binaryString = ('0000000' + asciiValue.toString(2)).slice(-5);
+    
+    if (currentInput === binaryString) {
+      updateScore();
+    }
+    nextCharacter();
+  }
+  
+  function nextCharacter() {
+    const character = getRandomCharacter();
+    characterDisplay.textContent = character;
+    currentInput = '';
+    userInput.textContent = '';
+  }
+  
+  gameScreen.addEventListener("click", (e) => {
+    if (e.target.tagName === "BUTTON") {
+      const key = e.target.getAttribute("data-key");
+      if (key === "Delete" && currentInput.length > 0) {
+        currentInput = currentInput.slice(0, -1);
+      } else if (key === "0" || key === "1") {
+        if (currentInput.length < 5) {
+          currentInput += key;
+        }
+      }
+      userInput.textContent = currentInput;
+      if (currentInput.length === 5) {
+        checkAnswer();
+      }
+    }
+  });
+  
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "0" || e.key === "1") {
+      if (currentInput.length < 5) {
+        currentInput += e.key;
+      }
+    } else if (e.key === "Backspace" && currentInput.length > 0) {
+      currentInput = currentInput.slice(0, -1);
+    }
+    userInput.textContent = currentInput;
+    if (currentInput.length === 5) {
+      checkAnswer();
+    }
+  });
+
+  startButton.addEventListener("click", startGame);
+  playAgainButton.addEventListener("click", startGame);
+})();
+</script>
+</body>
+</html>
