@@ -8,11 +8,12 @@
   body { text-align: center; font-family: Arial, sans-serif; margin: 0; }
   #gameControls { display: flex; justify-content: center; flex-wrap: wrap; align-self: center; }
   #gameControls button { font-size: 24px; padding: 20px; margin: 10px; }
-  div.hidden { display: none; }
   #feedback { font-size: 24px; transition: visibility 0s, opacity 0.5s linear; }
   #userInput { margin: 20px; font-size: 24px; }
   #gameScreen { display: flex; flex-direction: column; height: 100vh; }
   #userInput { flex-grow: 1; }
+  #gameScreen.hidden { display: none; }
+  #welcomeScreen.hidden { display: none; }
 </style>
 </head>
 <body>
