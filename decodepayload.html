@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Decoder</title>
+    <script>
+        // Pre-defined hash of the correct password (use a secure method to generate this)
+        const storedHash = "YOUR_STORED_HASH_HERE"; // Replace with your actual hashed password
+
+        // Function to hash a password using SHA-256
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        window.onload = async function() {
+            // Get the password from the query string
+            const urlParams = new URLSearchParams(window.location.search);
+            const password = urlParams.get('password');
+
+            // Hash the provided password
+            const passwordHash = await hashPassword(password);
+
+            // Compare the hashed password with the stored hash
+            if (passwordHash === storedHash) {
+                // Decode the base64 string from the hash and write it to the document
+                document.write(atob(location.hash.substring(1)));
+            } else {
+                document.write("Access Denied: Invalid password.");
+            }
+        };
+    </script>
+</head>
+<body>
+</body>
+</html>
